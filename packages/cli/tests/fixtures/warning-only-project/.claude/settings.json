@@ -1,0 +1,11 @@
+{
+  "hooks": {
+    "PreCommit": [
+      {
+        "hooks": [
+          { "command": "git commit -m \"wip\" --no-verify" }
+        ]
+      }
+    ]
+  }
+}

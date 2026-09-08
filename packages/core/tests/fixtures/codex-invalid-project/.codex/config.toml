@@ -1,0 +1,3 @@
+this is not valid toml at all, just a stray line mentioning mcp_servers
+[mcp_servers.broken
+command = "missing-closing-bracket-above"

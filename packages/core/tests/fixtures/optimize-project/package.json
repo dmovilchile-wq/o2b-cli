@@ -1,0 +1,6 @@
+{
+  "name": "fixture-express-project",
+  "dependencies": {
+    "express": "^4.19.0"
+  }
+}

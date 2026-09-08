@@ -1,0 +1,9 @@
+{
+  "name": "o2b-golden-demo",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Fixture-only demo project for O2B. No real code runs here — it exists so `o2b doctor`/`o2b optimize` have something to analyze.",
+  "dependencies": {
+    "express": "^4.19.0"
+  }
+}

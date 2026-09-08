@@ -1,0 +1,15 @@
+export * from './domain/types.js';
+export * from './adapters/harness-adapter.js';
+export { ClaudeCodeAdapter } from './adapters/claude-code/index.js';
+export { CodexAdapter } from './adapters/codex/index.js';
+export { collectInventory, type RawInventory } from './inventory/collect.js';
+export { detectConflicts } from './conflicts/detect.js';
+export { analyzeContext } from './context/analyze.js';
+export { estimateTokens } from './context/estimate-tokens.js';
+export { runDoctor } from './doctor/run.js';
+export { buildDoctorReport, O2B_VERSION } from './report/build-report.js';
+export { compareSnapshots } from './report/compare.js';
+export { runOptimize, type OptimizeResult } from './optimize/run.js';
+export { detectStackTags } from './optimize/detectors.js';
+export { loadProfiles, matchesProfile, type OptimizeProfile } from './optimize/profiles.js';
+export * from './edition.js';

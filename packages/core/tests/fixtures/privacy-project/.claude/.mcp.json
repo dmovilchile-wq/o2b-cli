@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "fixture-server": {
+      "command": "npx",
+      "args": ["-y", "fixture-mcp@1.0.0"],
+      "env": {
+        "FIXTURE_SECRET_VALUE": "this-value-must-never-appear-in-any-report"
+      }
+    }
+  }
+}

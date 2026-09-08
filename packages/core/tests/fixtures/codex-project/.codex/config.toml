@@ -1,0 +1,12 @@
+model = "gpt-5-codex"
+
+[mcp_servers.tooluniverse]
+command = "uvx"
+args = ["--refresh", "tooluniverse"]
+
+[mcp_servers.tooluniverse.env]
+PYTHONIOENCODING = "utf-8"
+FAKE_API_TOKEN = "fixture-value-not-a-real-secret"
+
+[mcp_servers.company_tools]
+url = "https://mcp.example.com/mcp"

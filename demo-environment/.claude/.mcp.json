@@ -1,0 +1,29 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@0.1.0"]
+    },
+    "playwright-mcp-extra": {
+      "command": "npx",
+      "args": ["-y", "some-other-playwright-mcp"],
+      "_comment": "HEURISTIC — NOT ENOUGH EVIDENCE case: shares only 1/3 name-words with 'playwright' (below the 0.6 similarity threshold), so O2B deliberately does NOT flag this as redundant-mcp. See docs/GOLDEN-DEMO.md."
+    },
+    "github-mcp": {
+      "command": "npx",
+      "args": ["-y", "@example/github-mcp"]
+    },
+    "github-mcp-server": {
+      "command": "npx",
+      "args": ["-y", "@example/github-mcp-server"],
+      "_comment": "Unambiguous redundant-mcp case: shares 2/3 name-words with 'github-mcp' (above the 0.6 threshold) — O2B DOES flag this pair."
+    },
+    "blender": {
+      "command": "npx",
+      "args": ["-y", "blender-mcp"],
+      "env": {
+        "BLENDER_API_KEY": "fake-demo-value-not-a-real-secret-12345"
+      }
+    }
+  }
+}

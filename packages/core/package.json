@@ -1,0 +1,13 @@
+{
+  "name": "@o2b/core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "dependencies": {
+    "@o2b/scanner": "*"
+  },
+  "scripts": {
+    "test": "vitest run"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "id": "node-web",
+  "matchers": { "anyTag": ["express", "react", "vite"] },
+  "recommends": { "mcpServers": [], "skillTags": ["testing", "security"] },
+  "onDemand": { "mcpServers": ["playwright"] },
+  "discourages": {
+    "mcpServers": ["blender", "n8n-mcp"],
+    "reason": "No se detectó relación con modelado 3D/Blender ni automatización n8n en las dependencias del proyecto."
+  }
+}

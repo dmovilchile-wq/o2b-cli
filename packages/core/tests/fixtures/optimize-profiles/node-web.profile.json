@@ -1,0 +1,7 @@
+{
+  "id": "node-web-test",
+  "matchers": { "anyTag": ["express"] },
+  "recommends": { "mcpServers": ["some-recommended-mcp"] },
+  "onDemand": { "mcpServers": ["playwright"] },
+  "discourages": { "mcpServers": ["blender"], "reason": "not related to the express stack" }
+}

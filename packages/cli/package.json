@@ -1,0 +1,17 @@
+{
+  "name": "@o2b/cli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "o2b": "./bin/o2b.js"
+  },
+  "dependencies": {
+    "@o2b/core": "*",
+    "@o2b/scanner": "*",
+    "tsx": "^4.19.0"
+  },
+  "scripts": {
+    "test": "vitest run"
+  }
+}
