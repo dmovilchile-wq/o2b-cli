@@ -43,6 +43,16 @@ describe('secrets rules', () => {
     expect(idsOf(findings)).not.toContain('secrets.github-token');
   });
 
+  it('flags a fine-grained GitHub PAT (github_pat_ prefix)', () => {
+    // Regression test for Fase 2 dogfood bug #4 (docs/DOGFOOD-BASELINE.md):
+    // the classic-prefix-only regex missed this real, currently-issued
+    // format. Value below is entirely synthetic, not derived from any
+    // real token.
+    const content = '"GITHUB_PERSONAL_ACCESS_TOKEN": "github_pat_ZZ00exampleSyntheticValueOnly1234567890"';
+    const findings = scanFile('settings.json', content, secretRules);
+    expect(idsOf(findings)).toContain('secrets.github-token');
+  });
+
   it('flags a PEM private key block', () => {
     const content = '-----BEGIN RSA PRIVATE KEY-----\nMIIB...\n-----END RSA PRIVATE KEY-----';
     const findings = scanFile('id_rsa', content, secretRules);

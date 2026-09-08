@@ -109,17 +109,17 @@ function riskFlagsForCommand(command: string): string[] {
   return flags;
 }
 
-async function collectHooksAndPlugins(
-  settingsPath: string,
+// Shared by settings.json / settings.local.json (`hooks: {...}` block)
+// and a plugin's own `hooks/hooks.json` (`{ hooks: {...} }` — same inner
+// shape, confirmed empirically against 3 real installed plugins during
+// Fase 2/3 dogfood: ecc, headroom, claude-mem all use this structure).
+function parseHooksConfig(
+  hooksConfig: Record<string, any>,
+  sourcePath: string,
   scope: Scope,
-  warnings: string[]
-): Promise<{ hooks: CollectedEntities['hooks']; mcpServers: CollectedEntities['mcpServers'] }> {
+  idPrefix: string
+): CollectedEntities['hooks'] {
   const hooks: CollectedEntities['hooks'] = [];
-  const mcpServers: CollectedEntities['mcpServers'] = [];
-  const settings = await readJsonSafe(settingsPath);
-  if (!settings) return { hooks, mcpServers };
-
-  const hooksConfig = settings.hooks || {};
   let hookIndex = 0;
   for (const [event, entries] of Object.entries<any>(hooksConfig)) {
     const list = Array.isArray(entries) ? entries : [entries];
@@ -130,27 +130,77 @@ async function collectHooksAndPlugins(
         if (!command) continue;
         hookIndex += 1;
         hooks.push({
-          id: `claude-code:${scope}:hook:${event}:${hookIndex}`,
+          id: `${idPrefix}:${scope}:hook:${event}:${hookIndex}`,
           event,
           command,
-          sourcePath: settingsPath,
+          sourcePath,
           scope,
           riskFlags: riskFlagsForCommand(command),
         });
       }
     }
   }
+  return hooks;
+}
+
+// Generic, non-hardcoded detection of API provider routing: any of these
+// env var NAMES (not values) being set in settings.json's `env` block
+// means Anthropic API traffic may be routed through something other
+// than the default endpoint (a corporate proxy, Bedrock/Vertex, a local
+// gateway, etc.) — legitimate in many setups, but worth surfacing as a
+// compatibility note since it changes what "the API" means for this
+// session. Names are documented Claude Code / Anthropic SDK env vars,
+// not any specific vendor's tool.
+const PROVIDER_ROUTING_ENV_VARS = [
+  'ANTHROPIC_BASE_URL',
+  'ANTHROPIC_AUTH_TOKEN',
+  'CLAUDE_CODE_USE_BEDROCK',
+  'CLAUDE_CODE_USE_VERTEX',
+] as const;
+
+function detectProviderRoutingWarnings(
+  settings: any,
+  sourcePath: string,
+  warnings: string[]
+): void {
+  const env = settings?.env;
+  if (!env || typeof env !== 'object') return;
+  const present = PROVIDER_ROUTING_ENV_VARS.filter((name) => name in env);
+  if (present.length) {
+    warnings.push(
+      `${sourcePath}: define ${present.join(', ')} — el tráfico a la API puede estar enrutado a través de un proxy/gateway/proveedor distinto al endpoint por defecto de Anthropic. No es necesariamente un problema; verificar que sea intencional (nombres de variable únicamente, nunca sus valores).`
+    );
+  }
+}
+
+async function collectHooksAndPlugins(
+  settingsPath: string,
+  scope: Scope,
+  warnings: string[]
+): Promise<{ hooks: CollectedEntities['hooks']; mcpServers: CollectedEntities['mcpServers'] }> {
+  const hooks: CollectedEntities['hooks'] = [];
+  const mcpServers: CollectedEntities['mcpServers'] = [];
+  const settings = await readJsonSafe(settingsPath);
+  if (!settings) return { hooks, mcpServers };
+
+  detectProviderRoutingWarnings(settings, settingsPath, warnings);
+  hooks.push(...parseHooksConfig(settings.hooks || {}, settingsPath, scope, 'claude-code'));
   return { hooks, mcpServers };
 }
 
-async function collectMcpServers(
-  mcpJsonPath: string,
-  scope: Scope
-): Promise<CollectedEntities['mcpServers']> {
+// Shared by both sources of MCP server config:
+//   - `.mcp.json` at the project root (project scope, checked into VCS)
+//   - `~/.claude.json` -> top-level `mcpServers` (user scope, added via
+//     `claude mcp add --scope user`)
+// Never reads env var *values*, only names (privacy-first).
+function parseMcpServersConfig(
+  mcpServersConfig: Record<string, any> | undefined,
+  scope: Scope,
+  sourcePath: string
+): CollectedEntities['mcpServers'] {
   const servers: CollectedEntities['mcpServers'] = [];
-  const config = await readJsonSafe(mcpJsonPath);
-  if (!config?.mcpServers) return servers;
-  for (const [name, def] of Object.entries<any>(config.mcpServers)) {
+  if (!mcpServersConfig) return servers;
+  for (const [name, def] of Object.entries<any>(mcpServersConfig)) {
     const envVarNames = def?.env ? Object.keys(def.env) : [];
     servers.push({
       id: `claude-code:${scope}:mcp:${name}`,
@@ -160,23 +210,202 @@ async function collectMcpServers(
       url: def?.url,
       envVarNames,
       scope,
-      sourcePath: mcpJsonPath,
+      sourcePath,
     });
   }
   return servers;
 }
 
+async function collectMcpServers(
+  mcpJsonPath: string,
+  scope: Scope
+): Promise<CollectedEntities['mcpServers']> {
+  const config = await readJsonSafe(mcpJsonPath);
+  return parseMcpServersConfig(config?.mcpServers, scope, mcpJsonPath);
+}
+
+// User-scope MCP servers (`claude mcp add --scope user ...`) persist in
+// `~/.claude.json` under a top-level `mcpServers` key — confirmed against
+// current Claude Code docs (code.claude.com/docs/en/mcp) and against a
+// real user's `~/.claude.json` during Fase 2 dogfood (see
+// docs/DOGFOOD-BASELINE.md, bug #2). This is a *different* file from
+// `~/.claude/settings.json` and from `~/.claude/.mcp.json`.
+//
+// `~/.claude.json` also has a `projects.<absolutePath>.mcpServers` shape
+// for "local" scope (per-project, not shared) — confirmed against
+// current docs AND against a real `~/.claude.json` (Fase A of the
+// second autonomous run): keys are the project's absolute path, stored
+// with forward slashes even on Windows. Both slash styles are tried so
+// this works regardless of platform path separator.
+async function collectClaudeJsonMcpServers(
+  homeDir: string,
+  rootDir: string
+): Promise<CollectedEntities['mcpServers']> {
+  const claudeJsonPath = path.join(homeDir, '.claude.json');
+  const config = await readJsonSafe(claudeJsonPath);
+  if (!config) return [];
+
+  const userScope = parseMcpServersConfig(config.mcpServers, 'global', claudeJsonPath);
+
+  const absoluteRoot = path.resolve(rootDir);
+  const candidateKeys = [absoluteRoot, absoluteRoot.replace(/\\/g, '/')];
+  const projects = config.projects || {};
+  const projectKey = candidateKeys.find((k) => k in projects);
+  const localScope = projectKey
+    ? parseMcpServersConfig(projects[projectKey].mcpServers, 'project', claudeJsonPath)
+    : [];
+
+  return [...userScope, ...localScope];
+}
+
+// Plugins installed via `claude plugin install` / the plugin marketplace
+// flow are recorded in two places, both under the user's global
+// `~/.claude/`:
+//   - `plugins/installed_plugins.json` -> which plugins/versions are
+//     installed and where (`installPath`).
+//   - `settings.json` -> `enabledPlugins` -> whether each is currently
+//     enabled for this user.
+// `providedCapabilities` is a best-effort, filesystem-only signal (which
+// of the conventional subdirectories the plugin package ships), not a
+// parse of the plugin's own manifest — kept intentionally shallow to
+// avoid guessing at an unspecified plugin manifest format.
+const PLUGIN_CAPABILITY_DIRS = ['agents', 'skills', 'hooks', 'commands'] as const;
+
+async function detectPluginCapabilities(installPath: string): Promise<string[]> {
+  const capabilities: string[] = [];
+  for (const dir of PLUGIN_CAPABILITY_DIRS) {
+    if (await pathExists(path.join(installPath, dir))) capabilities.push(dir);
+  }
+  return capabilities;
+}
+
+async function collectPlugins(
+  globalRoot: string,
+  homeDir: string,
+  warnings: string[]
+): Promise<{ plugins: CollectedEntities['plugins']; hooks: CollectedEntities['hooks'] }> {
+  const plugins: CollectedEntities['plugins'] = [];
+  const pluginHooks: CollectedEntities['hooks'] = [];
+  const installedPath = path.join(globalRoot, 'plugins', 'installed_plugins.json');
+  const installed = await readJsonSafe(installedPath);
+  if (!installed?.plugins) return { plugins, hooks: pluginHooks };
+
+  const settings = await readJsonSafe(path.join(globalRoot, 'settings.json'));
+  const enabledPlugins: Record<string, boolean> = settings?.enabledPlugins ?? {};
+
+  for (const [pluginKey, entries] of Object.entries<any>(installed.plugins)) {
+    const list = Array.isArray(entries) ? entries : [entries];
+    for (const entry of list) {
+      const installPath: string | undefined = entry?.installPath;
+      const capabilities = installPath
+        ? await detectPluginCapabilities(installPath)
+        : [];
+      plugins.push({
+        id: `claude-code:plugin:${pluginKey}`,
+        name: pluginKey,
+        sourceHarness: 'claude-code',
+        sourcePath: installPath ?? installedPath,
+        providedCapabilities: capabilities,
+        // `enabled` is not part of the current Plugin domain type; kept
+        // out of scope for this pass rather than widening the schema
+        // mid-fix (see docs/AUTONOMOUS-RUN.md).
+      });
+      if (!(pluginKey in enabledPlugins)) {
+        warnings.push(
+          `Plugin "${pluginKey}" está instalado (${installedPath}) pero no aparece en enabledPlugins de ${path.join(globalRoot, 'settings.json')} — estado de activación desconocido.`
+        );
+      }
+
+      // A plugin's own `hooks/hooks.json` is bundled with it and active
+      // when the plugin is enabled — confirmed against current Claude
+      // Code docs (code.claude.com/docs/en/hooks-guide: "Plugin
+      // hooks/hooks.json ... Yes, bundled with the plugin"). Same inner
+      // shape as settings.json's `hooks` block.
+      if (installPath && capabilities.includes('hooks')) {
+        const hooksJsonPath = path.join(installPath, 'hooks', 'hooks.json');
+        const hooksConfig = await readJsonSafe(hooksJsonPath);
+        if (hooksConfig?.hooks) {
+          pluginHooks.push(
+            ...parseHooksConfig(hooksConfig.hooks, hooksJsonPath, 'global', `claude-code:plugin:${pluginKey}`)
+          );
+        }
+      }
+    }
+  }
+  return { plugins, hooks: pluginHooks };
+}
+
+// `.claude/rules/*.md` — an additional instructions mechanism confirmed
+// against current Claude Code docs (code.claude.com/docs/en/memory,
+// "Organize rules with .claude/rules/"): markdown files discovered
+// recursively, each either loaded unconditionally at launch (no `paths`
+// frontmatter) or only when Claude reads a file matching its `paths`
+// glob (on-demand — see the `alwaysLoaded` field this sets).
+async function walkMarkdownFiles(dir: string, warnings: string[]): Promise<string[]> {
+  const results: string[] = [];
+  let entries: any[] = [];
+  try {
+    entries = await fs.readdir(dir, { withFileTypes: true } as any);
+  } catch (err: any) {
+    warnings.push(`No se pudo leer ${dir}: ${err.message}`);
+    return results;
+  }
+  for (const entry of entries) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      results.push(...(await walkMarkdownFiles(full, warnings)));
+    } else if (entry.isFile() && entry.name.endsWith('.md')) {
+      results.push(full);
+    }
+  }
+  return results;
+}
+
+async function collectRules(
+  rulesDir: string,
+  scope: Scope,
+  warnings: string[]
+): Promise<CollectedEntities['instructionSources']> {
+  if (!(await pathExists(rulesDir))) return [];
+  const files = await walkMarkdownFiles(rulesDir, warnings);
+  const sources: CollectedEntities['instructionSources'] = [];
+  for (const filePath of files) {
+    try {
+      const stat = await fs.stat(filePath);
+      const content = await fs.readFile(filePath, 'utf8');
+      const parsed = parseFrontmatterMarkdown(content);
+      const isPathScoped = 'paths' in parsed.frontmatter;
+      sources.push({
+        id: `claude-code:${scope}:instruction:rules:${filePath}`,
+        kind: 'rules',
+        scope,
+        path: filePath,
+        sizeBytes: stat.size,
+        estimatedTokens: estimateTokens(content),
+        alwaysLoaded: !isPathScoped,
+      });
+    } catch (err: any) {
+      warnings.push(`No se pudo leer la regla ${filePath}: ${err.message}`);
+    }
+  }
+  return sources;
+}
+
 async function collectInstructionSource(
   filePath: string,
-  kind: 'CLAUDE.md' | 'settings.json',
-  scope: Scope
+  kind: 'CLAUDE.md' | 'settings.json' | 'settings.local.json',
+  scope: Scope,
+  // Disambiguates the two possible project-CLAUDE.md locations
+  // (`<root>/CLAUDE.md` vs `<root>/.claude/CLAUDE.md`), which otherwise
+  // share the same scope+kind and would collide on id if both exist.
+  idTag = 'default'
 ): Promise<CollectedEntities['instructionSources'][number] | null> {
   if (!(await pathExists(filePath))) return null;
   try {
     const stat = await fs.stat(filePath);
     const content = await fs.readFile(filePath, 'utf8');
     return {
-      id: `claude-code:${scope}:instruction:${kind}`,
+      id: `claude-code:${scope}:instruction:${kind}:${idTag}`,
       kind,
       scope,
       path: filePath,
@@ -214,27 +443,67 @@ export class ClaudeCodeAdapter implements HarnessAdapter {
     ]);
     result.skills = [...globalSkills, ...projectSkills];
 
-    const [globalHooks, projectHooks] = await Promise.all([
+    // `.claude/settings.local.json` (project-local, gitignored personal
+    // overrides — e.g. permission approvals, personal hook additions)
+    // sits ABOVE shared `.claude/settings.json` in Claude Code's own
+    // precedence, but O2B is an inventory tool, not a runtime resolver:
+    // it reports every source it finds rather than computing one
+    // "winning" merged config, so both are collected as separate,
+    // labeled entries — never silently combined into a claim about what
+    // "the" effective config is.
+    const [globalHooks, projectHooks, projectLocalHooks] = await Promise.all([
       collectHooksAndPlugins(path.join(globalRoot, 'settings.json'), 'global', result.warnings),
       collectHooksAndPlugins(path.join(projectRoot, 'settings.json'), 'project', result.warnings),
+      collectHooksAndPlugins(path.join(projectRoot, 'settings.local.json'), 'project', result.warnings),
     ]);
-    result.hooks = [...globalHooks.hooks, ...projectHooks.hooks];
 
-    const [globalMcp, projectMcp] = await Promise.all([
-      collectMcpServers(path.join(globalRoot, '.mcp.json'), 'global'),
-      collectMcpServers(path.join(projectRoot, '.mcp.json'), 'project'),
-    ]);
-    result.mcpServers = [...globalMcp, ...projectMcp];
+    const pluginsResult = await collectPlugins(globalRoot, homeDir, result.warnings);
+    result.plugins = pluginsResult.plugins;
+    result.hooks = [
+      ...globalHooks.hooks,
+      ...projectHooks.hooks,
+      ...projectLocalHooks.hooks,
+      ...pluginsResult.hooks,
+    ];
 
-    const instructionCandidates = await Promise.all([
-      collectInstructionSource(path.join(homeDir, 'CLAUDE.md'), 'CLAUDE.md', 'global'),
-      collectInstructionSource(path.join(rootDir, 'CLAUDE.md'), 'CLAUDE.md', 'project'),
-      collectInstructionSource(path.join(globalRoot, 'settings.json'), 'settings.json', 'global'),
-      collectInstructionSource(path.join(projectRoot, 'settings.json'), 'settings.json', 'project'),
+    // Project-scope `.mcp.json` lives at the project ROOT (checked into
+    // VCS), not inside `.claude/` — confirmed against current Claude
+    // Code docs (code.claude.com/docs/en/mcp). User-scope AND
+    // per-project "local scope" servers both live in `~/.claude.json`, a
+    // separate file from anything under `~/.claude/`.
+    const [projectMcp, claudeJsonMcp] = await Promise.all([
+      collectMcpServers(path.join(rootDir, '.mcp.json'), 'project'),
+      collectClaudeJsonMcpServers(homeDir, rootDir),
     ]);
-    result.instructionSources = instructionCandidates.filter(
-      (x): x is NonNullable<typeof x> => x !== null
-    );
+    result.mcpServers = [...claudeJsonMcp, ...projectMcp];
+
+    // Global CLAUDE.md lives at `~/.claude/CLAUDE.md`, NOT `~/CLAUDE.md`
+    // — confirmed against current Claude Code docs
+    // (code.claude.com/docs/en/memory). Project CLAUDE.md can live at
+    // either `<root>/CLAUDE.md` or `<root>/.claude/CLAUDE.md`; both are
+    // read (docs list them as equivalent locations).
+    const [instructionCandidates, globalRules, projectRules] = await Promise.all([
+      Promise.all([
+        collectInstructionSource(path.join(globalRoot, 'CLAUDE.md'), 'CLAUDE.md', 'global', 'home-dotclaude'),
+        collectInstructionSource(path.join(rootDir, 'CLAUDE.md'), 'CLAUDE.md', 'project', 'root'),
+        collectInstructionSource(path.join(projectRoot, 'CLAUDE.md'), 'CLAUDE.md', 'project', 'dotclaude'),
+        collectInstructionSource(path.join(globalRoot, 'settings.json'), 'settings.json', 'global', 'home-dotclaude'),
+        collectInstructionSource(path.join(projectRoot, 'settings.json'), 'settings.json', 'project', 'dotclaude'),
+        collectInstructionSource(
+          path.join(projectRoot, 'settings.local.json'),
+          'settings.local.json',
+          'project',
+          'dotclaude'
+        ),
+      ]),
+      collectRules(path.join(globalRoot, 'rules'), 'global', result.warnings),
+      collectRules(path.join(projectRoot, 'rules'), 'project', result.warnings),
+    ]);
+    result.instructionSources = [
+      ...instructionCandidates.filter((x): x is NonNullable<typeof x> => x !== null),
+      ...globalRules,
+      ...projectRules,
+    ];
 
     return result;
   }

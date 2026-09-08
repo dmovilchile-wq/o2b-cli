@@ -1,0 +1,4 @@
+name: fixture_ambiguous_monorepo_mobile_app
+dependencies:
+  flutter:
+    sdk: flutter

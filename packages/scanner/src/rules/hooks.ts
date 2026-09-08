@@ -1,8 +1,5 @@
 import type { Rule } from '../types.js';
-
-function lineNumberAt(content: string, index: number): number {
-  return content.slice(0, index).split('\n').length;
-}
+import { createLineIndex } from '../line-index.js';
 
 export const hookRules: Rule[] = [
   {
@@ -14,10 +11,11 @@ export const hookRules: Rule[] = [
     appliesTo: () => true,
     check(content) {
       const matches: ReturnType<Rule['check']> = [];
+      const lineAt = createLineIndex(content);
       const re = /(curl|wget)[^\n]*\|\s*(sh|bash|zsh)\b/g;
       let m: RegExpExecArray | null;
       while ((m = re.exec(content)) !== null) {
-        matches.push({ line: lineNumberAt(content, m.index), rawEvidence: m[0], confidence: 'measured' });
+        matches.push({ line: lineAt(m.index), rawEvidence: m[0], confidence: 'measured' });
       }
       return matches;
     },
@@ -31,10 +29,11 @@ export const hookRules: Rule[] = [
     appliesTo: () => true,
     check(content) {
       const matches: ReturnType<Rule['check']> = [];
+      const lineAt = createLineIndex(content);
       const re = /\brm\s+-rf\b[^\n]*/g;
       let m: RegExpExecArray | null;
       while ((m = re.exec(content)) !== null) {
-        matches.push({ line: lineNumberAt(content, m.index), rawEvidence: m[0], confidence: 'measured' });
+        matches.push({ line: lineAt(m.index), rawEvidence: m[0], confidence: 'measured' });
       }
       return matches;
     },
@@ -48,10 +47,11 @@ export const hookRules: Rule[] = [
     appliesTo: () => true,
     check(content) {
       const matches: ReturnType<Rule['check']> = [];
+      const lineAt = createLineIndex(content);
       const re = /\beval\s+"?\$\{?[A-Za-z_][A-Za-z0-9_]*\}?/g;
       let m: RegExpExecArray | null;
       while ((m = re.exec(content)) !== null) {
-        matches.push({ line: lineNumberAt(content, m.index), rawEvidence: m[0], confidence: 'measured' });
+        matches.push({ line: lineAt(m.index), rawEvidence: m[0], confidence: 'measured' });
       }
       return matches;
     },

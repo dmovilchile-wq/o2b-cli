@@ -1,10 +1,17 @@
 {
   "id": "node-web",
-  "matchers": { "anyTag": ["express", "react", "vite"] },
-  "recommends": { "mcpServers": [], "skillTags": ["testing", "security"] },
-  "onDemand": { "mcpServers": ["playwright"] },
+  "matchers": { "anyTag": ["express", "vite"] },
+  "recommends": [],
+  "onDemand": [
+    {
+      "name": "playwright",
+      "reason": "El proyecto usa un framework/build-tool orientado a web (express/vite) — playwright ayuda con testing E2E de UI/API si el proyecto llega a necesitarlo.",
+      "expectedEffect": "Permite escribir/ejecutar tests E2E reales contra la app; no cambia nada hasta que se use activamente.",
+      "confidence": "heuristic"
+    }
+  ],
   "discourages": {
     "mcpServers": ["blender", "n8n-mcp"],
-    "reason": "No se detectó relación con modelado 3D/Blender ni automatización n8n en las dependencias del proyecto."
+    "reason": "No se detectó relación con modelado 3D/Blender ni automatización n8n en las dependencias del proyecto (express/vite)."
   }
 }

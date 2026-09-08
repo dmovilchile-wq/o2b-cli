@@ -1,0 +1,8 @@
+{
+  "name": "fixture-nextjs-supabase-app",
+  "dependencies": {
+    "next": "^15.0.0",
+    "react": "^19.0.0",
+    "@supabase/supabase-js": "^2.0.0"
+  }
+}

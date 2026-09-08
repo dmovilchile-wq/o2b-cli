@@ -18,11 +18,20 @@ let findingSeq = 0;
 
 export function scanFile(filePath: string, content: string, rules: Rule[] = ALL_RULES): SecurityFinding[] {
   const findings: SecurityFinding[] = [];
+  // Split ONCE per scanned file, not once per match — `content.split('\n')`
+  // inside the match loop degraded to O(matches * content length) on files
+  // with many findings (confirmed empirically, see
+  // tests/security/redos.test.ts, Fase E of the second autonomous run).
+  let cachedLines: string[] | null = null;
+  const lineAt = (lineNumber: number): string => {
+    if (!cachedLines) cachedLines = content.split('\n');
+    return cachedLines[lineNumber - 1] || '';
+  };
   for (const rule of rules) {
     if (!rule.appliesTo(filePath)) continue;
     const matches = rule.check(content, filePath);
     for (const match of matches) {
-      const lineText = match.line ? (content.split('\n')[match.line - 1] || '') : match.rawEvidence;
+      const lineText = match.line ? lineAt(match.line) : match.rawEvidence;
       findingSeq += 1;
       findings.push({
         id: `finding-${findingSeq}`,

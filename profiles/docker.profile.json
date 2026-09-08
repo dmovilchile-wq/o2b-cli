@@ -1,0 +1,6 @@
+{
+  "id": "docker",
+  "matchers": { "anyTag": ["docker"] },
+  "recommends": [],
+  "onDemand": []
+}

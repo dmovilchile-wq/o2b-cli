@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "fixture-user-scope-server": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "fixture-user-mcp@1.0.0"],
+      "env": {}
+    }
+  }
+}

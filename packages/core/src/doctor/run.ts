@@ -74,5 +74,6 @@ export async function runDoctor(
     recommendations: [], // populated by optimize, not doctor
     contextBreakdown,
     scores,
+    warnings: raw.warnings,
   };
 }

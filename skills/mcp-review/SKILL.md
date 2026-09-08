@@ -1,6 +1,9 @@
 ---
 name: mcp-review
 description: Review configured MCP servers for pinning, inlined secrets, and redundancy against other installed servers. Use before adding or changing an MCP server configuration.
+origin: O2B
+version: 1.0.0
+tags: [mcp, security]
 ---
 
 Check each MCP server entry for: an unpinned `npx -y` install, a secret

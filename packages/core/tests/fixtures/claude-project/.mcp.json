@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "fixture-project-server": {
+      "command": "npx",
+      "args": ["-y", "fixture-project-mcp@1.0.0"]
+    }
+  }
+}

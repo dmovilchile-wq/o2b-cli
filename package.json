@@ -1,6 +1,6 @@
 {
   "name": "o2b",
-  "version": "0.1.0",
+  "version": "0.2.0-beta.1",
   "private": true,
   "description": "O2B — AI Coding Environment Manager: inventory, doctor, conflict detection, and a security scanner for Claude Code and Codex.",
   "license": "MIT",
@@ -11,10 +11,13 @@
     "build": "npm run build --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
     "doctor": "node packages/cli/bin/o2b.js doctor",
-    "scan": "node packages/cli/bin/o2b.js scan ."
+    "scan": "node packages/cli/bin/o2b.js scan .",
+    "demo": "node packages/cli/bin/o2b.js doctor demo-environment --home demo-environment/fake-home && node packages/cli/bin/o2b.js optimize demo-environment --home demo-environment/fake-home",
+    "license-check": "license-checker-rseidelsohn --summary"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^2.1.9",
+    "license-checker-rseidelsohn": "^5.0.1",
     "typescript": "^5.6.0",
     "vitest": "^2.1.0"
   },

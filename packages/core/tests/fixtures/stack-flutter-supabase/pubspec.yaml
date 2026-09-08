@@ -1,0 +1,5 @@
+name: fixture_flutter_supabase_app
+dependencies:
+  flutter:
+    sdk: flutter
+  supabase_flutter: ^2.0.0

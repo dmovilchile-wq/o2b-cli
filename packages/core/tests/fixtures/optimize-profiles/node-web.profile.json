@@ -1,7 +1,21 @@
 {
   "id": "node-web-test",
   "matchers": { "anyTag": ["express"] },
-  "recommends": { "mcpServers": ["some-recommended-mcp"] },
-  "onDemand": { "mcpServers": ["playwright"] },
+  "recommends": [
+    {
+      "name": "some-recommended-mcp",
+      "reason": "fixture reason for testing",
+      "expectedEffect": "fixture expected effect",
+      "confidence": "heuristic"
+    }
+  ],
+  "onDemand": [
+    {
+      "name": "playwright",
+      "reason": "fixture on-demand reason",
+      "expectedEffect": "fixture on-demand effect",
+      "confidence": "heuristic"
+    }
+  ],
   "discourages": { "mcpServers": ["blender"], "reason": "not related to the express stack" }
 }

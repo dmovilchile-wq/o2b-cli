@@ -1,0 +1,13 @@
+{
+  "id": "supabase",
+  "matchers": { "anyTag": ["supabase"] },
+  "recommends": [
+    {
+      "name": "supabase",
+      "reason": "El proyecto declara una dependencia directa de Supabase (@supabase/* en package.json, o supabase_flutter en pubspec.yaml) — a diferencia de otros perfiles, aquí el stack detectado ES el dominio exacto de la herramienta, no una inferencia.",
+      "expectedEffect": "Permite inspeccionar/gestionar el proyecto de Supabase (tablas, migraciones, functions) directamente desde la sesión, en vez de cambiar de contexto a la consola web.",
+      "confidence": "heuristic"
+    }
+  ],
+  "onDemand": []
+}

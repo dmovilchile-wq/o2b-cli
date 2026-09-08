@@ -28,6 +28,12 @@ export function compareSnapshots(current: DoctorReport, baseline: DoctorReport):
       ['skills', baseline.inventory.skills.length, current.inventory.skills.length],
       ['mcpServers', baseline.inventory.mcpServers.length, current.inventory.mcpServers.length],
       ['hooks', baseline.inventory.hooks.length, current.inventory.hooks.length],
+      ['plugins', baseline.inventory.plugins.length, current.inventory.plugins.length],
+      [
+        'instructionSources',
+        baseline.inventory.instructionSources.length,
+        current.inventory.instructionSources.length,
+      ],
     ] as const
   ).map(([metric, before, after]) => ({ metric, before, after, delta: after - before }));
 

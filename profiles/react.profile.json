@@ -1,0 +1,13 @@
+{
+  "id": "react",
+  "matchers": { "anyTag": ["react"] },
+  "recommends": [],
+  "onDemand": [
+    {
+      "name": "playwright",
+      "reason": "React detectado en dependencias — playwright ayuda con testing E2E de componentes/UI si el proyecto llega a necesitarlo.",
+      "expectedEffect": "Permite escribir/ejecutar tests E2E reales contra la UI; no cambia nada hasta que se use activamente.",
+      "confidence": "heuristic"
+    }
+  ]
+}

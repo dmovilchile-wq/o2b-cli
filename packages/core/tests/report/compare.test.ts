@@ -76,6 +76,35 @@ describe('compareSnapshots', () => {
     });
   });
 
+  it('computes count deltas for plugins and instructionSources', () => {
+    const baseline = makeReport({
+      inventory: { agents: [], skills: [], mcpServers: [], hooks: [], plugins: [], instructionSources: [] },
+    });
+    const current = makeReport({
+      inventory: {
+        agents: [],
+        skills: [],
+        mcpServers: [],
+        hooks: [],
+        plugins: [{ id: 'p1' } as any],
+        instructionSources: [{ id: 'i1' } as any, { id: 'i2' } as any],
+      },
+    });
+    const diff = compareSnapshots(current, baseline);
+    expect(diff.countDeltas.find((d) => d.metric === 'plugins')).toEqual({
+      metric: 'plugins',
+      before: 0,
+      after: 1,
+      delta: 1,
+    });
+    expect(diff.countDeltas.find((d) => d.metric === 'instructionSources')).toEqual({
+      metric: 'instructionSources',
+      before: 0,
+      after: 2,
+      delta: 2,
+    });
+  });
+
   it('computes the always-loaded token delta', () => {
     const baseline = makeReport({
       context: {

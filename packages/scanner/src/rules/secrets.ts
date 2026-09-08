@@ -1,8 +1,5 @@
 import type { Rule } from '../types.js';
-
-function lineNumberAt(content: string, index: number): number {
-  return content.slice(0, index).split('\n').length;
-}
+import { createLineIndex } from '../line-index.js';
 
 function makeRegexSecretRule(opts: {
   id: string;
@@ -20,11 +17,12 @@ function makeRegexSecretRule(opts: {
     appliesTo: () => true,
     check(content) {
       const matches: ReturnType<Rule['check']> = [];
+      const lineAt = createLineIndex(content);
       const re = new RegExp(opts.pattern.source, opts.pattern.flags.includes('g') ? opts.pattern.flags : opts.pattern.flags + 'g');
       let m: RegExpExecArray | null;
       while ((m = re.exec(content)) !== null) {
         matches.push({
-          line: lineNumberAt(content, m.index),
+          line: lineAt(m.index),
           rawEvidence: m[0],
           confidence: 'measured',
         });
@@ -60,7 +58,12 @@ export const secretRules: Rule[] = [
     id: 'secrets.github-token',
     description: 'Posible token de GitHub (personal access token) hardcodeado.',
     remediation: 'Revocar el token y moverlo a un secret manager o variable de entorno.',
-    pattern: /gh[pousr]_[A-Za-z0-9]{30,}/,
+    // Classic PATs (ghp_/gho_/ghu_/ghs_/ghr_) plus the current
+    // fine-grained format (github_pat_...), confirmed against GitHub's
+    // documented token prefixes. Verified against a real fine-grained
+    // token during O2B's Fase 2 dogfood (docs/DOGFOOD-BASELINE.md, bug
+    // #4) that the classic-only pattern missed.
+    pattern: /(gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,})/,
     severity: 'critical',
   }),
   makeRegexSecretRule({

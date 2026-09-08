@@ -1,8 +1,5 @@
 import type { Rule } from '../types.js';
-
-function lineNumberAt(content: string, index: number): number {
-  return content.slice(0, index).split('\n').length;
-}
+import { createLineIndex } from '../line-index.js';
 
 // Zero-width / bidi-control / invisible-format Unicode code points sometimes
 // used to hide text from a human reviewer while an LLM still parses it.
@@ -25,11 +22,12 @@ export const instructionRules: Rule[] = [
     appliesTo: () => true,
     check(content) {
       const matches: ReturnType<Rule['check']> = [];
+      const lineAt = createLineIndex(content);
       const re = new RegExp(HIDDEN_UNICODE_PATTERN.source, 'g');
       let m: RegExpExecArray | null;
       while ((m = re.exec(content)) !== null) {
         matches.push({
-          line: lineNumberAt(content, m.index),
+          line: lineAt(m.index),
           rawEvidence: `U+${m[0].codePointAt(0)!.toString(16).toUpperCase()}`,
           confidence: 'measured',
         });
@@ -48,10 +46,11 @@ export const instructionRules: Rule[] = [
     appliesTo: () => true,
     check(content) {
       const matches: ReturnType<Rule['check']> = [];
+      const lineAt = createLineIndex(content);
       const re = /ignor[ae]\s+(all\s+)?(previous|prior|above)\s+instructions?/gi;
       let m: RegExpExecArray | null;
       while ((m = re.exec(content)) !== null) {
-        matches.push({ line: lineNumberAt(content, m.index), rawEvidence: m[0], confidence: 'heuristic' });
+        matches.push({ line: lineAt(m.index), rawEvidence: m[0], confidence: 'heuristic' });
       }
       return matches;
     },

@@ -30,22 +30,29 @@ export function analyzeContext(inventory: RawInventory): ContextBreakdown {
     note: 'Costo bajo por diseño (progressive disclosure) — no crece linealmente de forma peligrosa con la cantidad de skills.',
   };
 
-  const alwaysLoadedBytes = inventory.instructionSources.reduce((sum, i) => sum + i.sizeBytes, 0);
-  const alwaysLoadedTokens = inventory.instructionSources.reduce(
-    (sum, i) => sum + i.estimatedTokens,
-    0
-  );
+  // `alwaysLoaded === false` marks a source Claude Code only loads on
+  // demand (e.g. a path-scoped rule in `.claude/rules/`) — it must NOT
+  // count toward the always-loaded budget, or the score would punish a
+  // pattern (path-scoped rules) that exists specifically to *reduce*
+  // context cost.
+  const unconditionalSources = inventory.instructionSources.filter((i) => i.alwaysLoaded !== false);
+  const onDemandRuleSources = inventory.instructionSources.filter((i) => i.alwaysLoaded === false);
+
+  const alwaysLoadedBytes = unconditionalSources.reduce((sum, i) => sum + i.sizeBytes, 0);
+  const alwaysLoadedTokens = unconditionalSources.reduce((sum, i) => sum + i.estimatedTokens, 0);
   const alwaysLoaded: ContextBreakdownEntry = {
     label: 'CLAUDE.md / AGENTS.md / settings.json (global + proyecto) — se leen completos en cada sesión',
     method: 'estimated',
     sizeBytes: alwaysLoadedBytes,
     estimatedTokens: alwaysLoadedTokens,
-    note: 'Tamaño en disco es MEDIDO; el conteo de tokens es ESTIMADO (heurística ~4 caracteres/token, no el tokenizer real).',
+    note: 'Tamaño en disco es MEDIDO; el conteo de tokens es ESTIMADO (heurística ~4 caracteres/token, no el tokenizer real). Excluye reglas de .claude/rules/ con "paths:" (esas cargan bajo demanda, no siempre).',
   };
 
+  const onDemandRuleBytes = onDemandRuleSources.reduce((sum, i) => sum + i.sizeBytes, 0);
   const onDemandBytes =
     inventory.agents.reduce((sum, a) => sum + a.bodyBytes, 0) +
-    inventory.skills.reduce((sum, s) => sum + s.bodyBytes, 0);
+    inventory.skills.reduce((sum, s) => sum + s.bodyBytes, 0) +
+    onDemandRuleBytes;
   const onDemandPotential: ContextBreakdownEntry = {
     label: 'Cuerpo completo de agents/skills — costo SI se activan, no confirmado que se activen',
     method: 'estimated',

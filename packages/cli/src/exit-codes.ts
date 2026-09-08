@@ -7,9 +7,13 @@ export const EXIT_EXECUTION_ERROR = 3; // O2B itself failed to run (bad args, I/
 
 import type { SecurityFinding } from '@o2b/core';
 
-export function exitCodeForFindings(findings: SecurityFinding[]): number {
+// `strict`: for CI gates that want zero tolerance — any finding at all
+// (not just critical/high) is treated as a hard failure (EXIT_CRITICAL),
+// rather than the default EXIT_WARNINGS. Purely a CLI-layer policy choice;
+// the underlying findings and their severities are never altered by it.
+export function exitCodeForFindings(findings: SecurityFinding[], strict = false): number {
   const hasCritical = findings.some((f) => f.severity === 'critical' || f.severity === 'high');
   if (hasCritical) return EXIT_CRITICAL;
-  if (findings.length > 0) return EXIT_WARNINGS;
+  if (findings.length > 0) return strict ? EXIT_CRITICAL : EXIT_WARNINGS;
   return EXIT_HEALTHY;
 }

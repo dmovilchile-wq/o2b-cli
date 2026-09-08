@@ -1,11 +1,31 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
+import type { Confidence } from '../domain/types.js';
+
+// A single MCP server suggestion within a profile. `reason`/`expectedEffect`
+// are required so every Recommendation `optimize` produces can explain WHAT
+// it's suggesting, WHY (tied to what was actually detected), and WHAT
+// CHANGES if you follow it — never a bare tool name with no justification.
+export interface ProfileMcpSuggestion {
+  name: string;
+  reason: string;
+  expectedEffect: string;
+  confidence: Confidence;
+}
 
 export interface OptimizeProfile {
   id: string;
   matchers: { anyTag: string[] };
-  recommends?: { mcpServers?: string[]; skillTags?: string[] };
-  onDemand?: { mcpServers?: string[] };
+  /**
+   * Directly relevant, install-if-missing suggestions. Kept intentionally
+   * short/empty for most profiles — detecting a stack does not by itself
+   * justify recommending a specific tool; only stacks whose domain IS the
+   * tool's domain (e.g. Supabase-in-deps -> the Supabase MCP) get one.
+   */
+  recommends?: ProfileMcpSuggestion[];
+  /** Situationally useful, never pushed — printed as ON-DEMAND, not RECOMMENDED. */
+  onDemand?: ProfileMcpSuggestion[];
+  /** Installed servers this profile considers irrelevant to the detected stack. */
   discourages?: { mcpServers?: string[]; reason: string };
 }
 

@@ -1,0 +1,6 @@
+{
+  "name": "fixture-ambiguous-monorepo-root",
+  "dependencies": {
+    "react": "^19.0.0"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "id": "nextjs",
+  "matchers": { "anyTag": ["nextjs"] },
+  "recommends": [],
+  "onDemand": [
+    {
+      "name": "playwright",
+      "reason": "Next.js detectado — playwright ayuda con testing E2E de páginas/rutas si el proyecto llega a necesitarlo.",
+      "expectedEffect": "Permite escribir/ejecutar tests E2E reales contra la app; no cambia nada hasta que se use activamente.",
+      "confidence": "heuristic"
+    },
+    {
+      "name": "vercel",
+      "reason": "Next.js suele desplegarse en Vercel, pero O2B no puede confirmar el destino de deploy real desde el manifest — este es un ON-DEMAND condicional, no una recomendación firme.",
+      "expectedEffect": "Si el proyecto despliega en Vercel, permite gestionar deployments/dominios/env vars desde la sesión. Irrelevante si el despliegue es a otro proveedor.",
+      "confidence": "estimated"
+    }
+  ]
+}

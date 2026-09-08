@@ -2,6 +2,7 @@ import os from 'node:os';
 import type { HarnessAdapter } from '../adapters/harness-adapter.js';
 import { ClaudeCodeAdapter } from '../adapters/claude-code/index.js';
 import { CodexAdapter } from '../adapters/codex/index.js';
+import { CursorAdapter } from '../adapters/cursor/index.js';
 import type {
   Agent,
   Harness,
@@ -23,7 +24,7 @@ export interface RawInventory {
   warnings: string[];
 }
 
-const ALL_ADAPTERS: HarnessAdapter[] = [new ClaudeCodeAdapter(), new CodexAdapter()];
+const ALL_ADAPTERS: HarnessAdapter[] = [new ClaudeCodeAdapter(), new CodexAdapter(), new CursorAdapter()];
 
 export async function collectInventory(
   rootDir: string,

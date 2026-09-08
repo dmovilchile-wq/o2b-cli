@@ -1,0 +1,6 @@
+{
+  "id": "flutter-dart",
+  "matchers": { "anyTag": ["flutter"] },
+  "recommends": [],
+  "onDemand": []
+}

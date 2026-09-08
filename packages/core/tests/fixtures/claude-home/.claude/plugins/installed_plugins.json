@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "plugins": {
+    "demo-plugin@demo-marketplace": [
+      {
+        "scope": "user",
+        "installPath": "FIXTURE_INSTALL_PATH_PLACEHOLDER",
+        "version": "1.0.0"
+      }
+    ]
+  }
+}

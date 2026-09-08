@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "fixture-cursor-mcp": {
+      "command": "npx",
+      "args": ["-y", "fixture-cursor-mcp@1.0.0"],
+      "env": {}
+    }
+  }
+}

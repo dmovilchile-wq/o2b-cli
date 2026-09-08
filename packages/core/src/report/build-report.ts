@@ -6,7 +6,7 @@ import { DOCTOR_REPORT_SCHEMA_VERSION, type DoctorReport, type InventorySnapshot
 // package.json at runtime, to avoid coupling the report builder to a build
 // step or JSON import assertion syntax that varies across Node versions.
 // Bump this alongside packages/core/package.json's "version" field.
-export const O2B_VERSION = '0.1.0';
+export const O2B_VERSION = '0.2.0-beta.1';
 
 export interface BuildReportOptions {
   rootDir: string;
@@ -46,5 +46,6 @@ export function buildDoctorReport(
     context: snapshot.contextBreakdown,
     recommendations: snapshot.recommendations,
     scores: snapshot.scores,
+    warnings: snapshot.warnings,
   };
 }

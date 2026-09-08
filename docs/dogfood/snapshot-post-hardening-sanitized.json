@@ -1,0 +1,571 @@
+{
+  "schemaVersion": 1,
+  "o2bVersion": "0.1.0",
+  "generatedAt": "2026-09-08T07:27:57.883Z",
+  "environment": {
+    "os": "win32",
+    "nodeVersion": "v24.15.0",
+    "rootDirLabel": "."
+  },
+  "harnesses": [
+    {
+      "id": "claude-code",
+      "kind": "claude-code",
+      "configRoots": [
+        ".",
+        "<HOME>"
+      ]
+    },
+    {
+      "id": "codex",
+      "kind": "codex",
+      "configRoots": [
+        ".",
+        "<HOME>"
+      ]
+    }
+  ],
+  "inventory": {
+    "agents": [],
+    "skills": [
+      {
+        "id": "claude-code:global:skill:flutter-flame-gamedev",
+        "name": "flutter-flame-gamedev",
+        "description": "Skill GLOBAL de desarrollo de videojuegos con Flutter + Flame — arquitectura de componentes, coordenadas isométricas, gameplay (unidades/IA/combate/recursos), pipeline de assets, performance móvil y testing. Úsalo para CUALQUIER tarea de código de gameplay en un proyecto Flutter/Flame (no solo The Best Empire). NO congela versiones de API: antes de usar una API de Flutter/Flame/Dart sensible a versión, consulta Context7 o la documentación oficial actual — las reglas de este skill son de diseño/arquitectura, no un pin de API.",
+        "sourceHarness": "claude-code",
+        "sourcePath": "<HOME>\\.claude\\skills\\flutter-flame-gamedev\\SKILL.md",
+        "scope": "global",
+        "frontmatterBytes": 582,
+        "bodyBytes": 2827
+      },
+      {
+        "id": "claude-code:global:skill:hunter-design",
+        "name": "hunter-design",
+        "description": "Design system skill for hunter. Activate when building UI components, pages, or any visual elements. Provides exact color tokens, typography scale, spacing grid, component patterns, and craft rules. Read references/DESIGN.md before writing any CSS or JSX. Includes ultra-mode visual journey: read references/ANIMATIONS.md, references/LAYOUT.md, references/COMPONENTS.md, and references/INTERACTIONS.md for full motion and layout details.",
+        "sourceHarness": "claude-code",
+        "sourcePath": "<HOME>\\.claude\\skills\\hunter-design\\SKILL.md",
+        "scope": "global",
+        "frontmatterBytes": 470,
+        "bodyBytes": 33862
+      },
+      {
+        "id": "claude-code:global:skill:hyperframes",
+        "name": "hyperframes",
+        "description": ">",
+        "sourceHarness": "claude-code",
+        "sourcePath": "<HOME>\\.claude\\skills\\hyperframes\\SKILL.md",
+        "scope": "global",
+        "frontmatterBytes": 843,
+        "bodyBytes": 14814
+      },
+      {
+        "id": "claude-code:global:skill:hyperframes-animation",
+        "name": "hyperframes-animation",
+        "description": "All animation knowledge for HyperFrames — atomic motion rules, multi-phase scene blueprints, scene transitions, broader motion-design techniques, AND the seven runtime adapters (GSAP default, plus Lottie, Three.js, Anime.js, CSS keyframes, Web Animations API, TypeGPU). Use for any motion or animation task: pick 2-4 rules and compose, or load a blueprint, or look up runtime-specific API (e.g. GSAP eases / Lottie player / Three.js mixer). Also covers auditing an existing composition's choreography (animation map) and 24 named text-animation effects. HyperFrames-native: single paused timeline, seek-safe, deterministic.",
+        "sourceHarness": "claude-code",
+        "sourcePath": "<HOME>\\.claude\\skills\\hyperframes-animation\\SKILL.md",
+        "scope": "global",
+        "frontmatterBytes": 668,
+        "bodyBytes": 7108
+      },
+      {
+        "id": "claude-code:global:skill:hyperframes-audio",
+        "name": "hyperframes-audio",
+        "description": ">",
+        "sourceHarness": "claude-code",
+        "sourcePath": "<HOME>\\.claude\\skills\\hyperframes-audio\\SKILL.md",
+        "scope": "global",
+        "frontmatterBytes": 741,
+        "bodyBytes": 23984
+      },
+      {
+        "id": "claude-code:global:skill:hyperframes-cli",
+        "name": "hyperframes-cli",
+        "description": ">",
+        "sourceHarness": "claude-code",
+        "sourcePath": "<HOME>\\.claude\\skills\\hyperframes-cli\\SKILL.md",
+        "scope": "global",
+        "frontmatterBytes": 599,
+        "bodyBytes": 17683
+      },
+      {
+        "id": "claude-code:global:skill:hyperframes-core",
+        "name": "hyperframes-core",
+        "description": "The HyperFrames composition contract — build one renderable project. Use for composition structure, the `data-*` timing attributes, `class=\"clip\"`, tracks, sub-compositions, variables, framework-owned media playback, deterministic-render rules, and validation. Also covers Tailwind projects and the STORYBOARD.md / SCRIPT.md plan formats. Read before writing composition HTML.",
+        "sourceHarness": "claude-code",
+        "sourcePath": "<HOME>\\.claude\\skills\\hyperframes-core\\SKILL.md",
+        "scope": "global",
+        "frontmatterBytes": 414,
+        "bodyBytes": 12643
+      },
+      {
+        "id": "claude-code:global:skill:hyperframes-creative",
+        "name": "hyperframes-creative",
+        "description": "Non-animation creative direction for HyperFrames videos. Use for design spec (frame.md / design.md) handling, palettes, typography, narration, beat planning, audio-reactive visuals, composition patterns, and brand / style decisions. For atomic motion patterns and scene blueprints, use `hyperframes-animation`.",
+        "sourceHarness": "claude-code",
+        "sourcePath": "<HOME>\\.claude\\skills\\hyperframes-creative\\SKILL.md",
+        "scope": "global",
+        "frontmatterBytes": 350,
+        "bodyBytes": 5995
+      },
+      {
+        "id": "claude-code:global:skill:hyperframes-keyframes",
+        "name": "hyperframes-keyframes",
+        "description": ">",
+        "sourceHarness": "claude-code",
+        "sourcePath": "<HOME>\\.claude\\skills\\hyperframes-keyframes\\SKILL.md",
+        "scope": "global",
+        "frontmatterBytes": 479,
+        "bodyBytes": 15413
+      },
+      {
+        "id": "claude-code:global:skill:hyperframes-registry",
+        "name": "hyperframes-registry",
+        "description": "Install, discover, and wire registry blocks and components into HyperFrames compositions. Use when running hyperframes add or hyperframes catalog, installing one item or every block matching a tag, wiring an installed item into index.html, or working with hyperframes.json. Covers discovery, install locations, block sub-composition wiring, component snippet merging, and authoring a new block or component to contribute upstream (idea → scaffold → validate → PR).",
+        "sourceHarness": "claude-code",
+        "sourcePath": "<HOME>\\.claude\\skills\\hyperframes-registry\\SKILL.md",
+        "scope": "global",
+        "frontmatterBytes": 510,
+        "bodyBytes": 8692
+      },
+      {
+        "id": "claude-code:global:skill:inyeccionesadomiciliosantiago-design",
+        "name": "inyeccionesadomiciliosantiago-design",
+        "description": "Design system skill for inyeccionesadomiciliosantiago. Activate when building UI components, pages, or any visual elements. Provides exact color tokens, typography scale, spacing grid, component patterns, and craft rules. Read references/DESIGN.md before writing any CSS or JSX. Includes ultra-mode visual journey: read references/ANIMATIONS.md, references/LAYOUT.md, references/COMPONENTS.md, and references/INTERACTIONS.md for full motion and layout details.",
+        "sourceHarness": "claude-code",
+        "sourcePath": "<HOME>\\.claude\\skills\\inyeccionesadomiciliosantiago-design\\SKILL.md",
+        "scope": "global",
+        "frontmatterBytes": 516,
+        "bodyBytes": 55924
+      },
+      {
+        "id": "claude-code:global:skill:media-use",
+        "name": "media-use",
+        "description": "Agent Media OS, the single skill for every media need in a HyperFrames project. Resolve BGM, SFX, image, icon, brand logo, voice, color grade, or LUT into a frozen local file or paste-ready block + ledger record (one verb, `resolve`); generate via TTS / music / image models when the catalog misses; produce voiceover, transcription, captions, and background removal through one shared audio engine; operate on media (cut / reframe / transform); and reuse assets across projects. Also use for vague feedback that real footage looks dark, flat, boring, should feel retro/camcorder/print/ASCII, needs privacy, or needs a media reveal.",
+        "sourceHarness": "claude-code",
+        "sourcePath": "<HOME>\\.claude\\skills\\media-use\\SKILL.md",
+        "scope": "global",
+        "frontmatterBytes": 661,
+        "bodyBytes": 7312
+      },
+      {
+        "id": "claude-code:global:skill:super-prompt-maestro",
+        "name": "super-prompt-maestro",
+        "description": "Especificación completa del Super Prompt Maestro (v2.1) — el estándar de trabajo del usuario para desarrollo con Claude Code. Las reglas esenciales ya están cargadas de forma permanente vía ~/.claude/CLAUDE.md; invoca ESTE skill solo cuando necesites el detalle completo, es decir cuando: (1) la tarea se clasificó HIGH o PRODUCTION, (2) una regla del CLAUDE.md global necesita más detalle o matices, (3) dos fuentes de información entran en contradicción y hace falta el protocolo de resolución completo, (4) la tarea requiere un protocolo especializado (bug, feature nueva, UI desde referencia visual, migración, seguridad), o (5) el usuario pide explícitamente \"consulta el super prompt\" / \"v2.1\" / el protocolo completo. NO lo invoques para tareas LOW/MEDIUM triviales — el CLAUDE.md global ya basta.",
+        "sourceHarness": "claude-code",
+        "sourcePath": "<HOME>\\.claude\\skills\\super-prompt-maestro\\SKILL.md",
+        "scope": "global",
+        "frontmatterBytes": 859,
+        "bodyBytes": 2137
+      },
+      {
+        "id": "claude-code:global:skill:tu-sitio-de-referencia-design",
+        "name": "tu-sitio-de-referencia-design",
+        "description": "Design system skill for tu-sitio-de-referencia. Activate when building UI components, pages, or any visual elements. Provides exact color tokens, typography scale, spacing grid, component patterns, and craft rules. Read references/DESIGN.md before writing any CSS or JSX.",
+        "sourceHarness": "claude-code",
+        "sourcePath": "<HOME>\\.claude\\skills\\tu-sitio-de-referencia-design\\SKILL.md",
+        "scope": "global",
+        "frontmatterBytes": 320,
+        "bodyBytes": 11533
+      }
+    ],
+    "mcpServers": [
+      {
+        "id": "claude-code:global:mcp:supabase",
+        "name": "supabase",
+        "transport": "stdio",
+        "command": "cmd",
+        "envVarNames": [],
+        "scope": "global",
+        "sourcePath": "<HOME>\\.claude.json"
+      },
+      {
+        "id": "claude-code:global:mcp:n8n-mcp",
+        "name": "n8n-mcp",
+        "transport": "stdio",
+        "command": "npx",
+        "envVarNames": [],
+        "scope": "global",
+        "sourcePath": "<HOME>\\.claude.json"
+      },
+      {
+        "id": "claude-code:global:mcp:lightrag-mcp",
+        "name": "lightrag-mcp",
+        "transport": "stdio",
+        "command": "<HOME>\\AppData\\Roaming\\Python\\Python314\\Scripts\\uvx.exe",
+        "envVarNames": [],
+        "scope": "global",
+        "sourcePath": "<HOME>\\.claude.json"
+      },
+      {
+        "id": "claude-code:global:mcp:context7",
+        "name": "context7",
+        "transport": "stdio",
+        "command": "cmd",
+        "envVarNames": [],
+        "scope": "global",
+        "sourcePath": "<HOME>\\.claude.json"
+      },
+      {
+        "id": "claude-code:global:mcp:github",
+        "name": "github",
+        "transport": "stdio",
+        "command": "cmd",
+        "envVarNames": [
+          "GITHUB_PERSONAL_ACCESS_TOKEN"
+        ],
+        "scope": "global",
+        "sourcePath": "<HOME>\\.claude.json"
+      },
+      {
+        "id": "claude-code:global:mcp:sentry",
+        "name": "sentry",
+        "transport": "http",
+        "url": "https://mcp.sentry.dev/mcp",
+        "envVarNames": [],
+        "scope": "global",
+        "sourcePath": "<HOME>\\.claude.json"
+      },
+      {
+        "id": "claude-code:global:mcp:playwright",
+        "name": "playwright",
+        "transport": "stdio",
+        "command": "cmd",
+        "envVarNames": [],
+        "scope": "global",
+        "sourcePath": "<HOME>\\.claude.json"
+      },
+      {
+        "id": "claude-code:global:mcp:vercel",
+        "name": "vercel",
+        "transport": "http",
+        "url": "https://mcp.vercel.com",
+        "envVarNames": [],
+        "scope": "global",
+        "sourcePath": "<HOME>\\.claude.json"
+      },
+      {
+        "id": "claude-code:global:mcp:hyperframes",
+        "name": "hyperframes",
+        "transport": "http",
+        "url": "https://mcp.heygen.com/mcp/hyperframes/",
+        "envVarNames": [],
+        "scope": "global",
+        "sourcePath": "<HOME>\\.claude.json"
+      },
+      {
+        "id": "claude-code:global:mcp:blender",
+        "name": "blender",
+        "transport": "stdio",
+        "command": "<HOME>\\AppData\\Roaming\\Python\\Python314\\Scripts\\uvx.exe",
+        "envVarNames": [
+          "BLENDER_MCP_SAFE_MODE"
+        ],
+        "scope": "global",
+        "sourcePath": "<HOME>\\.claude.json"
+      },
+      {
+        "id": "claude-code:global:mcp:headroom",
+        "name": "headroom",
+        "transport": "stdio",
+        "command": "<HOME>\\AppData\\Local\\Python\\pythoncore-3.14-64\\Scripts\\headroom.EXE",
+        "envVarNames": [],
+        "scope": "global",
+        "sourcePath": "<HOME>\\.claude.json"
+      },
+      {
+        "id": "codex:global:mcp:node_repl",
+        "name": "node_repl",
+        "transport": "unknown",
+        "envVarNames": [
+          "NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS",
+          "NODE_REPL_NODE_MODULE_DIRS",
+          "NODE_REPL_NODE_PATH",
+          "NODE_REPL_TRUSTED_CODE_PATHS",
+          "CODEX_HOME",
+          "NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S",
+          "BROWSER_USE_AVAILABLE_BACKENDS",
+          "NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER",
+          "NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME",
+          "BROWSER_USE_CODEX_APP_BUILD_FLAVOR",
+          "BROWSER_USE_CODEX_APP_VERSION",
+          "SKY_CUA_NATIVE_PIPE",
+          "SKY_CUA_NATIVE_PIPE_DIRECTORY",
+          "CODEX_CLI_PATH"
+        ],
+        "scope": "global",
+        "sourcePath": "<HOME>\\.codex\\config.toml"
+      }
+    ],
+    "hooks": [
+      {
+        "id": "claude-code:global:hook:SessionStart:1",
+        "event": "SessionStart",
+        "command": "<HOME>/AppData/Local/Python/pythoncore-3.14-64/Scripts/headroom.EXE init hook ensure --profile init-user --marker headroom-init-claude",
+        "sourcePath": "<HOME>\\.claude\\settings.json",
+        "scope": "global",
+        "riskFlags": []
+      },
+      {
+        "id": "claude-code:global:hook:PreToolUse:2",
+        "event": "PreToolUse",
+        "command": "<HOME>/AppData/Local/Python/pythoncore-3.14-64/Scripts/headroom.EXE init hook ensure --profile init-user --marker headroom-init-claude",
+        "sourcePath": "<HOME>\\.claude\\settings.json",
+        "scope": "global",
+        "riskFlags": []
+      }
+    ],
+    "plugins": [
+      {
+        "id": "claude-code:plugin:claude-mem@thedotmack",
+        "name": "claude-mem@thedotmack",
+        "sourceHarness": "claude-code",
+        "sourcePath": "<HOME>\\.claude\\plugins\\cache\\thedotmack\\claude-mem\\13.24.0",
+        "providedCapabilities": [
+          "skills",
+          "hooks"
+        ]
+      },
+      {
+        "id": "claude-code:plugin:ui-ux-pro-max@ui-ux-pro-max-skill",
+        "name": "ui-ux-pro-max@ui-ux-pro-max-skill",
+        "sourceHarness": "claude-code",
+        "sourcePath": "<HOME>\\.claude\\plugins\\cache\\ui-ux-pro-max-skill\\ui-ux-pro-max\\2.13.0",
+        "providedCapabilities": []
+      },
+      {
+        "id": "claude-code:plugin:ecc@ecc",
+        "name": "ecc@ecc",
+        "sourceHarness": "claude-code",
+        "sourcePath": "<HOME>\\.claude\\plugins\\cache\\ecc\\ecc\\2.2.1",
+        "providedCapabilities": [
+          "agents",
+          "skills",
+          "hooks",
+          "commands"
+        ]
+      },
+      {
+        "id": "claude-code:plugin:headroom@headroom-marketplace",
+        "name": "headroom@headroom-marketplace",
+        "sourceHarness": "claude-code",
+        "sourcePath": "<HOME>\\.claude\\plugins\\cache\\headroom-marketplace\\headroom\\0.37.0",
+        "providedCapabilities": [
+          "hooks"
+        ]
+      }
+    ],
+    "instructionSources": [
+      {
+        "id": "claude-code:global:instruction:CLAUDE.md:home-dotclaude",
+        "kind": "CLAUDE.md",
+        "scope": "global",
+        "path": "<HOME>\\.claude\\CLAUDE.md",
+        "sizeBytes": 7893,
+        "estimatedTokens": 1930
+      },
+      {
+        "id": "claude-code:global:instruction:settings.json:home-dotclaude",
+        "kind": "settings.json",
+        "scope": "global",
+        "path": "<HOME>\\.claude\\settings.json",
+        "sizeBytes": 7908,
+        "estimatedTokens": 1974
+      }
+    ]
+  },
+  "security": [
+    {
+      "id": "finding-1",
+      "ruleId": "secrets.github-token",
+      "category": "secrets",
+      "severity": "critical",
+      "confidence": "measured",
+      "file": "<HOME>\\.claude.json",
+      "location": {
+        "line": 1791
+      },
+      "description": "Posible token de GitHub (personal access token) hardcodeado.",
+      "evidence": "\"GITHUB_PERSONAL_ACCESS_TOKEN\": \"gith********************KHoh\"",
+      "remediation": "Revocar el token y moverlo a un secret manager o variable de entorno."
+    },
+    {
+      "id": "finding-2",
+      "ruleId": "mcp.npx-auto-install-latest",
+      "category": "mcp",
+      "severity": "medium",
+      "confidence": "measured",
+      "file": "<HOME>\\.claude.json",
+      "location": {
+        "line": 1361
+      },
+      "description": "Un servidor MCP se instala con \"npx -y\" sin fijar versión, ejecutando código de terceros sin pin.",
+      "evidence": "\"npx ******-mcp\"",
+      "remediation": "Fijar una versión exacta del paquete (ej. paquete@1.2.3) en vez de resolver \"latest\" en cada arranque."
+    },
+    {
+      "id": "finding-3",
+      "ruleId": "mcp.npx-auto-install-latest",
+      "category": "mcp",
+      "severity": "medium",
+      "confidence": "measured",
+      "file": "<HOME>\\.claude.json",
+      "location": {
+        "line": 1777
+      },
+      "description": "Un servidor MCP se instala con \"npx -y\" sin fijar versión, ejecutando código de terceros sin pin.",
+      "evidence": "\"npx ********************test\"",
+      "remediation": "Fijar una versión exacta del paquete (ej. paquete@1.2.3) en vez de resolver \"latest\" en cada arranque."
+    },
+    {
+      "id": "finding-4",
+      "ruleId": "mcp.env-secret-inlined",
+      "category": "mcp",
+      "severity": "high",
+      "confidence": "measured",
+      "file": "<HOME>\\.claude.json",
+      "location": {
+        "line": 1791
+      },
+      "description": "La configuración de un servidor MCP tiene un valor de variable de entorno con forma de secreto en texto plano (en vez de referenciarlo desde el entorno del sistema).",
+      "evidence": "\"GIT********************Hoh\"",
+      "remediation": "No incluir valores de secretos directamente en el JSON/TOML de configuración; usar variables de entorno del sistema."
+    },
+    {
+      "id": "finding-5",
+      "ruleId": "mcp.arg-secret-inlined",
+      "category": "mcp",
+      "severity": "high",
+      "confidence": "heuristic",
+      "file": "<HOME>\\.claude.json",
+      "location": {
+        "line": 1744
+      },
+      "description": "La configuración de un servidor MCP pasa lo que parece ser un secreto en texto plano como argumento de línea de comandos (\"args\"), en vez de referenciarlo desde el entorno del sistema.",
+      "evidence": "\"--ac********************415a\"",
+      "remediation": "No pasar valores de secretos como argumentos CLI en la config del servidor MCP; usar variables de entorno del sistema en vez de \"args\"."
+    },
+    {
+      "id": "finding-6",
+      "ruleId": "mcp.arg-secret-inlined",
+      "category": "mcp",
+      "severity": "high",
+      "confidence": "heuristic",
+      "file": "<HOME>\\.claude.json",
+      "location": {
+        "line": 1767
+      },
+      "description": "La configuración de un servidor MCP pasa lo que parece ser un secreto en texto plano como argumento de línea de comandos (\"args\"), en vez de referenciarlo desde el entorno del sistema.",
+      "evidence": "\"--api-key\",",
+      "remediation": "No pasar valores de secretos como argumentos CLI en la config del servidor MCP; usar variables de entorno del sistema en vez de \"args\"."
+    }
+  ],
+  "conflicts": [
+    {
+      "id": "conflict-1",
+      "type": "similar-description",
+      "involves": [
+        {
+          "type": "skill",
+          "id": "claude-code:global:skill:hunter-design"
+        },
+        {
+          "type": "skill",
+          "id": "claude-code:global:skill:inyeccionesadomiciliosantiago-design"
+        }
+      ],
+      "description": "\"hunter-design\" y \"inyeccionesadomiciliosantiago-design\" tienen descripciones muy similares (similitud léxica 96%) — posible solapamiento, no confirmado.",
+      "severity": "low",
+      "confidence": "heuristic"
+    },
+    {
+      "id": "conflict-2",
+      "type": "similar-description",
+      "involves": [
+        {
+          "type": "skill",
+          "id": "claude-code:global:skill:hunter-design"
+        },
+        {
+          "type": "skill",
+          "id": "claude-code:global:skill:tu-sitio-de-referencia-design"
+        }
+      ],
+      "description": "\"hunter-design\" y \"tu-sitio-de-referencia-design\" tienen descripciones muy similares (similitud léxica 69%) — posible solapamiento, no confirmado.",
+      "severity": "low",
+      "confidence": "heuristic"
+    },
+    {
+      "id": "conflict-3",
+      "type": "similar-description",
+      "involves": [
+        {
+          "type": "skill",
+          "id": "claude-code:global:skill:inyeccionesadomiciliosantiago-design"
+        },
+        {
+          "type": "skill",
+          "id": "claude-code:global:skill:tu-sitio-de-referencia-design"
+        }
+      ],
+      "description": "\"inyeccionesadomiciliosantiago-design\" y \"tu-sitio-de-referencia-design\" tienen descripciones muy similares (similitud léxica 69%) — posible solapamiento, no confirmado.",
+      "severity": "low",
+      "confidence": "heuristic"
+    }
+  ],
+  "context": {
+    "installed": {
+      "label": "32 elementos instalados (agents+skills+mcp+hooks+plugins)",
+      "method": "measured"
+    },
+    "discoverable": {
+      "label": "Índice de nombre+descripción de skills, cargado siempre al iniciar sesión",
+      "method": "estimated",
+      "sizeBytes": 8012,
+      "estimatedTokens": 2003,
+      "note": "Costo bajo por diseño (progressive disclosure) — no crece linealmente de forma peligrosa con la cantidad de skills."
+    },
+    "alwaysLoaded": {
+      "label": "CLAUDE.md / AGENTS.md / settings.json (global + proyecto) — se leen completos en cada sesión",
+      "method": "estimated",
+      "sizeBytes": 15801,
+      "estimatedTokens": 3904,
+      "note": "Tamaño en disco es MEDIDO; el conteo de tokens es ESTIMADO (heurística ~4 caracteres/token, no el tokenizer real)."
+    },
+    "onDemandPotential": {
+      "label": "Cuerpo completo de agents/skills — costo SI se activan, no confirmado que se activen",
+      "method": "estimated",
+      "sizeBytes": 219927,
+      "estimatedTokens": 54982,
+      "note": "No se puede saber, con un escaneo offline, cuáles de estos se invocan realmente en una sesión."
+    },
+    "loadedActive": {
+      "label": "Uso real (LOADED/ACTIVE) durante una sesión en curso",
+      "method": "unknown",
+      "note": "Un CLI offline no tiene acceso a telemetría de sesión — requiere un hook de sesión opcional (ver roadmap Pro). Nunca se rellena con una suposición."
+    }
+  },
+  "recommendations": [],
+  "scores": {
+    "security": {
+      "value": 14,
+      "method": "measured",
+      "breakdown": "6 hallazgo(s) de seguridad ponderados por severidad."
+    },
+    "configuration": {
+      "value": 88,
+      "method": "measured+heuristic",
+      "breakdown": "0 conflicto(s) medido(s), 3 heurístico(s) (posible redundancia)."
+    },
+    "contextConfiguration": {
+      "value": 100,
+      "method": "estimated",
+      "breakdown": "3904 tokens estimados siempre-cargados vs. presupuesto de referencia (arbitrario, no validado empíricamente) de 20000."
+    },
+    "compatibility": {
+      "value": 95,
+      "method": "heuristic",
+      "breakdown": "1 advertencia(s) de compatibilidad/lectura durante la recolección."
+    }
+  }
+}

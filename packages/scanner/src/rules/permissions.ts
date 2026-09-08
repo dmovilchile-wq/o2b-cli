@@ -1,8 +1,5 @@
 import type { Rule } from '../types.js';
-
-function lineNumberAt(content: string, index: number): number {
-  return content.slice(0, index).split('\n').length;
-}
+import { createLineIndex } from '../line-index.js';
 
 export const permissionRules: Rule[] = [
   {
@@ -14,10 +11,11 @@ export const permissionRules: Rule[] = [
     appliesTo: (filePath) => filePath.endsWith('.json') || filePath.endsWith('.md'),
     check(content) {
       const matches: ReturnType<Rule['check']> = [];
+      const lineAt = createLineIndex(content);
       const re = /--dangerously-skip-permissions/g;
       let m: RegExpExecArray | null;
       while ((m = re.exec(content)) !== null) {
-        matches.push({ line: lineNumberAt(content, m.index), rawEvidence: m[0], confidence: 'measured' });
+        matches.push({ line: lineAt(m.index), rawEvidence: m[0], confidence: 'measured' });
       }
       return matches;
     },
@@ -31,10 +29,11 @@ export const permissionRules: Rule[] = [
     appliesTo: (filePath) => filePath.endsWith('.json'),
     check(content) {
       const matches: ReturnType<Rule['check']> = [];
+      const lineAt = createLineIndex(content);
       const re = /"Bash\(\*\)"/g;
       let m: RegExpExecArray | null;
       while ((m = re.exec(content)) !== null) {
-        matches.push({ line: lineNumberAt(content, m.index), rawEvidence: m[0], confidence: 'measured' });
+        matches.push({ line: lineAt(m.index), rawEvidence: m[0], confidence: 'measured' });
       }
       return matches;
     },
@@ -48,10 +47,11 @@ export const permissionRules: Rule[] = [
     appliesTo: () => true,
     check(content) {
       const matches: ReturnType<Rule['check']> = [];
+      const lineAt = createLineIndex(content);
       const re = /git\s+(commit|push)[^\n]*--no-verify/g;
       let m: RegExpExecArray | null;
       while ((m = re.exec(content)) !== null) {
-        matches.push({ line: lineNumberAt(content, m.index), rawEvidence: m[0], confidence: 'measured' });
+        matches.push({ line: lineAt(m.index), rawEvidence: m[0], confidence: 'measured' });
       }
       return matches;
     },

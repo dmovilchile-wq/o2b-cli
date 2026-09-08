@@ -7,11 +7,14 @@ original del producto; este archivo es el estado real de avance.
 
 - **Fase 1 (MVP core): COMPLETA.**
 - **Fase 1.1 (hardening/validación): COMPLETA.** 112/112 tests pasando.
-- **Fase 2 (dogfood read-only contra `~/.claude` real del usuario): NO
-  AUTORIZADA TODAVÍA.** No ejecutar `o2b doctor`/`o2b optimize` contra la
-  configuración real del usuario hasta que lo pida explícitamente en una
-  sesión futura. Hasta ahora, todo se probó contra fixtures sintéticos y
-  `demo-environment/`.
+- **Fase 2 (dogfood read-only contra `~/.claude` real del usuario):
+  EJECUTADA el 2026-09-08.** Resultado completo en
+  `docs/DOGFOOD-BASELINE.md`. Validación: **MODERATE**. Recomendación:
+  **CONDITIONAL GO** — no avanzar a beta pública ni a `--apply` hasta
+  corregir 3 bugs críticos de cobertura (ruta de `CLAUDE.md` global, MCP
+  servers leídos solo desde `.mcp.json` y no desde `~/.claude.json`,
+  detección de plugins no implementada). Ningún archivo fuera de este
+  repo fue modificado durante el dogfood.
 - **No publicado.** Sin git remoto, sin npm publish, sin push a GitHub.
   Repo git local inicializado en esta misma carpeta para poder seguir
   trabajando con historial.

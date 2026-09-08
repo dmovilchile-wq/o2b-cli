@@ -1,6 +1,9 @@
 ---
 name: context-budget-audit
 description: Check how large the always-loaded instructions (CLAUDE.md/AGENTS.md/settings.json) have grown, using O2B's context breakdown. Use when a project's CLAUDE.md or AGENTS.md keeps growing.
+origin: O2B
+version: 1.0.0
+tags: [context, optimization]
 ---
 
 Read the `context` section of an `o2b doctor` report. Only the

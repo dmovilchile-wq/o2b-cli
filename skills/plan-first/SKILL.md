@@ -1,6 +1,9 @@
 ---
 name: plan-first
 description: Break a non-trivial task into verifiable steps before writing any code. Use before starting a feature, refactor, or bug fix that touches more than one file.
+origin: O2B-CONTRIBUTOR
+version: 1.0.0
+tags: [contributor, engineering-practice]
 ---
 
 Before writing code: list the concrete steps, what "done" means for each,

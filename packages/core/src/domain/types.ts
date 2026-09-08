@@ -1,7 +1,7 @@
 // O2B domain model — harness-agnostic entities.
 // No file in this module may import anything from adapters/claude-code or adapters/codex.
 
-export type HarnessKind = 'claude-code' | 'codex';
+export type HarnessKind = 'claude-code' | 'codex' | 'cursor';
 export type Scope = 'global' | 'project';
 export type Confidence = 'measured' | 'heuristic' | 'estimated' | 'unknown';
 export type Severity = 'critical' | 'high' | 'medium' | 'low' | 'info';
@@ -69,7 +69,12 @@ export interface Plugin {
   providedCapabilities: string[];
 }
 
-export type InstructionKind = 'CLAUDE.md' | 'AGENTS.md' | 'settings.json';
+export type InstructionKind =
+  | 'CLAUDE.md'
+  | 'AGENTS.md'
+  | 'settings.json'
+  | 'settings.local.json'
+  | 'rules';
 
 export interface InstructionSource {
   id: string;
@@ -78,6 +83,14 @@ export interface InstructionSource {
   path: string;
   sizeBytes: number;
   estimatedTokens: number;
+  /**
+   * Whether this source is loaded unconditionally at session launch.
+   * Defaults to `true` when omitted (CLAUDE.md/settings.json/AGENTS.md
+   * always were). `.claude/rules/*.md` files WITH `paths:` frontmatter
+   * are `false` — Claude Code only loads them on demand, when a
+   * matching file is opened, per current official docs.
+   */
+  alwaysLoaded?: boolean;
 }
 
 export interface SecurityFindingLocation {
@@ -115,7 +128,7 @@ export interface Conflict {
   confidence: Confidence;
 }
 
-export type RecommendationKind = 'add' | 'remove' | 'review';
+export type RecommendationKind = 'add' | 'remove' | 'review' | 'on-demand';
 
 export interface Recommendation {
   id: string;
@@ -123,8 +136,12 @@ export interface Recommendation {
   targetType: EntityRef['type'] | 'mcpServer' | 'skillTag';
   targetId?: string;
   reason: string;
+  /** Which profile produced this — the "source" of the recommendation. */
   matchedProfile: string;
+  /** Doubles as WHAT-METHOD-PRODUCED-THIS: measured/heuristic/estimated/unknown. */
   confidence: Confidence;
+  /** What installing/removing this is expected to change, in plain terms. */
+  expectedEffect: string;
 }
 
 export interface ProjectProfile {
@@ -182,6 +199,16 @@ export interface InventorySnapshot {
   recommendations: Recommendation[];
   contextBreakdown: ContextBreakdown;
   scores: HealthScores;
+  /**
+   * Human-readable notes from collection (parse failures, provider-routing
+   * env vars detected, a plugin missing from enabledPlugins, etc.) — these
+   * already fed into `scores.compatibility`'s count, but the actual text
+   * was previously discarded, leaving a user with a number and no
+   * explanation. Found and fixed during Fase H of the second autonomous
+   * run while verifying the new provider-routing detection was actually
+   * visible anywhere.
+   */
+  warnings: string[];
 }
 
 // --- Versioned, storable report shape -------------------------------------
@@ -219,6 +246,7 @@ export interface DoctorReport {
   context: ContextBreakdown;
   recommendations: Recommendation[];
   scores: HealthScores;
+  warnings: string[];
 }
 
 // --- Baseline comparison (local-only in Phase 1; no history persistence) --
@@ -231,7 +259,15 @@ export interface ScoreDelta {
 }
 
 export interface CountDelta {
-  metric: 'findings' | 'conflicts' | 'agents' | 'skills' | 'mcpServers' | 'hooks';
+  metric:
+    | 'findings'
+    | 'conflicts'
+    | 'agents'
+    | 'skills'
+    | 'mcpServers'
+    | 'hooks'
+    | 'plugins'
+    | 'instructionSources';
   before: number;
   after: number;
   delta: number;

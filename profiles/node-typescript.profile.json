@@ -1,0 +1,6 @@
+{
+  "id": "node-typescript",
+  "matchers": { "anyTag": ["typescript"] },
+  "recommends": [],
+  "onDemand": []
+}
